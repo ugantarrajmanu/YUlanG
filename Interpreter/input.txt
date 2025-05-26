@@ -1,0 +1,12 @@
+arey yug a = 5 + 5 int hai
+arey yug b = a + 10 int hai
+arey yug c = a * b int hai
+c = c * 10 + 5 hai
+yug agar (c >= 2000) hai to {
+    yug agar c <= 2005 hai to {
+        c = c + 10 hai
+    }
+    yug c likhna hai
+} nahi to {
+    yug "Bye" likhna hai
+}
