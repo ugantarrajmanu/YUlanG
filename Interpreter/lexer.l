@@ -19,9 +19,14 @@ string       \"([^\\\"]|\\.)*\"
 "yug agar"          { return YUG_IF; }
 "hai to"            { return YUG_IF_THEN; }
 "nahi to"           { return YUG_ELSE; }
-"yug"               { return YUG_PRINT_INIT; }
+"yug"               { return YUG_INIT; }
 "likhna"            { return YUG_PRINT_END; }
 "hai"               { return YUG_EOS; }
+
+"ko"                { return YUG_KO; }
+"se"                { return YUG_SE; }
+"tak lejana"       { return YUG_TAK; }
+
 {string}            { yylval.str = strdup(yytext); return STRING; }
 {number}            { yylval.value = atoi(yytext); return NUMBER; }
 {identifier}        { yylval.id = strdup(yytext); return IDENTIFIER; }

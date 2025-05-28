@@ -10,3 +10,7 @@ yug agar (c >= 2000) hai to {
 } nahi to {
     yug "Bye" likhna hai
 }
+
+yug i ko 0 se 10 tak lejana hai {
+    yug i likhna hai
+} 

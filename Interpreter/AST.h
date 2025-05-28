@@ -6,6 +6,7 @@ typedef enum {
         Identifier,
         Literal,
         IfStatement,
+        ForStatement,
         BlockStatement,
         Body,
         PrintStatement,
@@ -47,6 +48,14 @@ typedef enum {
             } IfStatement;
 
             struct {
+                struct ASTNode* id;
+                struct ASTNode* start;
+                struct ASTNode* end;
+                struct ASTNode* body;
+
+            } ForStatement;
+
+            struct {
                 struct ASTNode* body;
             } BlockStatement;
             
@@ -74,3 +83,4 @@ typedef enum {
     ASTNode* makeBlockNode(ASTNode* body);
     ASTNode* makePrintNode(ASTNode* value, char* strValue);
     ASTNode* makeBodyNode (ASTNode* insideBody, ASTNode* value);
+    ASTNode* makeForNode(ASTNode* id, ASTNode* start, ASTNode* end, ASTNode* body);

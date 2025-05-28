@@ -57,13 +57,15 @@
 
 %token YUG_DECLARATION YUG_INT YUG_EOS 
 %token YUG_IF YUG_IF_THEN YUG_ELSE
-%token YUG_PRINT_INIT YUG_PRINT_END
+%token YUG_KO YUG_SE YUG_TAK
+%token YUG_INIT YUG_PRINT_END
 %token <value> NUMBER
 %token <id> IDENTIFIER
 %token <str> STRING
 
 %type<node> assign
 %type<node> ifstatement
+%type<node> forstatement
 %type<node> blockstatement
 %type<node> body
 %type<node> printstatement
@@ -77,6 +79,7 @@ program: statement
 
 statement: assign { eval($1); }
          | ifstatement { eval($1); }
+         | forstatement { eval($1); }
          | printstatement { eval($1); }
         ;
 
@@ -93,6 +96,9 @@ ifstatement: YUG_IF expr YUG_IF_THEN LBRACE blockstatement RBRACE { $$ = makeIfN
                 }
             ;
 
+forstatement: YUG_INIT IDENTIFIER YUG_KO expr YUG_SE expr YUG_TAK YUG_EOS LBRACE blockstatement RBRACE { $$ = makeForNode(makeIDNode(strdup($2)), $4, $6, $10);}
+            ;
+
 blockstatement: body { $$ = makeBlockNode($1); } 
               ;
 
@@ -105,9 +111,8 @@ body: body assign { $$ = makeBodyNode($1, $2); }
     ;
 
 
-
-printstatement: YUG_PRINT_INIT STRING YUG_PRINT_END YUG_EOS { $$ = makePrintNode(NULL, $2); }
-              | YUG_PRINT_INIT expr YUG_PRINT_END YUG_EOS { $$ = makePrintNode($2, NULL); }
+printstatement: YUG_INIT STRING YUG_PRINT_END YUG_EOS { $$ = makePrintNode(NULL, $2); }
+              | YUG_INIT expr YUG_PRINT_END YUG_EOS { $$ = makePrintNode($2, NULL); }
               ;
 
 expr: expr PLUS expr { $$ = makeBinExprNode($1, PLUS, $3); }
@@ -163,7 +168,7 @@ void insert(char* name, char* type, int value) {
         symbol_count++;
     } else if (index != -1) {
         // throw error
-        printf("Error: Variable \'%s\' already declared.....\n", name);
+        printf("ErrorInserting: Variable \'%s\' already declared.....\n", name);
         exit(1);
     }
 }
@@ -174,7 +179,7 @@ int getValue(char* name){
         return symbolTable[index].value;
     } else {
         // throw error
-        printf("Error: Variable \'%s\' is not declared.....\n", name);
+        printf("ErrorGetting: Variable \'%s\' is not declared.....\n", name);
         exit(1);
     }
 }
@@ -184,7 +189,7 @@ void setValue(char* name, int value) {
     if (index != -1) {
         symbolTable[index].value = value;
     } else {
-        printf("Error: Variable \'%s\' is not declared.....\n", name);
+        printf("ErrorSetting: Variable \'%s\' is not declared.....\n", name);
     }
 }
 
@@ -262,7 +267,15 @@ ASTNode* makePrintNode(ASTNode* value, char* strValue) {
     return newNode;
 }
 
+ASTNode* makeForNode(ASTNode* id, ASTNode* start, ASTNode* end, ASTNode* body) {
+    ASTNode* newNode = (ASTNode*)malloc(sizeof(ASTNode));
+    newNode->type = ForStatement;
+    newNode->ForStatement.id = id;
+    newNode->ForStatement.start = start;
+    newNode->ForStatement.end = end;
+    newNode->ForStatement.body = body;
 
+}
 
 
 
@@ -303,6 +316,37 @@ void eval(ASTNode* node) {
             } else {
                 eval(node->IfStatement.alternate);
             }
+            break;
+        
+        case ForStatement:
+            int i;
+            bool inST = false;
+            if (lookup(node->ForStatement.id->Identifier.value) == -1) {
+                printf("hello\n");
+                i = node->ForStatement.start->Literal.value;
+            } else {
+                printf("world");
+                inST = true;
+                i = getValue(node->ForStatement.id->Identifier.value);
+            }
+            
+            int end = node->ForStatement.end->Literal.value;
+            printf("No way.....%d\t%d\n", i, end);
+            
+            insert(node->ForStatement.id->Identifier.value, "int", i);
+            for (i; i < end; i++) {
+                setValue(node->ForStatement.id->Identifier.value, i);
+                eval(node->ForStatement.body);
+            }
+            
+
+            if (inST) {
+                setValue(node->ForStatement.id->Identifier.value, i);                
+            } else {
+                remove(node->ForStatement.id->Identifier.value);
+                symbol_count--;
+            }
+            printf("\n%d\n", lookup(node->ForStatement.id->Identifier.value));
             break;
         
         case BlockStatement:
