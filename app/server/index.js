@@ -15,6 +15,14 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
+app.options("*", (req, res) => {
+  res.header("Access-Control-Allow-Origin", "https://yulang-front.vercel.app");
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.status(200).end();
+});
+
+
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
