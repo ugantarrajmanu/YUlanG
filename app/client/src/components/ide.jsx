@@ -18,21 +18,18 @@ yug 50 likhna hai`
   );
 
   const executeCode = async () => {
-    const respost = await fetch("/api", {
+    const res = await fetch("/api", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ code: code }),
-    });
+    })
 
-    const resget = (await fetch("/api", {method: "GET"}).then((res) => res.text())).split("\r\n");
+    const data = (await res.text()).split("\r\n");
+    data.pop() 
 
-    resget.pop()
-
-    console.log([">  Executing", ...resget]);  
-
-    setOutputs(["Executing", ...resget]);
+    setOutputs(["Executing", ...data]);
   };
 
   return (

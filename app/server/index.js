@@ -9,43 +9,23 @@ const INTERPRETER_PATH = "yulang.exe";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-
 app.use(express.json());
 
-// ----------------------------------------------------
-
-// app.get("/hello" , (req, res) => {
-//   res.render("../client/build/index");
-// })
-
-// ----------------------------------------------------
 app.post("/api", (req, res) => {
   const received_code = req.body.code.split("\n").join(" ");
-  
+
   const comm = `echo ${received_code} | ${INTERPRETER_PATH} > output`;
 
   exec(comm, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`error: ${error.name}`);
-    }
-    if (stderr) {
-      console.error(`stderr: ${stderr}`);
-    }
-    
-    res.send("running")
-  });
-});
+    const output = fs.readFileSync("output");
 
-app.get("/api", (req, res) => {
-  const output = fs.readFileSync("./output");
+    res.send(output);
 
-  // console.log(output);
+    fs.writeFileSync("output", "");
+    fs.unlinkSync("output", (err) => {
+      if (err) throw err;
+    });
 
-  // res.send(output);
-
-  fs.writeFileSync("./output_file/output", "");
-  fs.unlinkSync("./output_file/output", (err) => {
-    if (err) throw err;
   });
 });
 
