@@ -4,7 +4,7 @@ const fs = require("fs");
 const { exec } = require("child_process");
 const { CORS } = require("cors");
 
-app.use(CORS(), origin = "https://yulang-back.onrender.com/api");
+app.use(CORS(), origin = "https://yulang-back.onrender.com");
 
 const INTERPRETER_PATH = "yulang.out";
 
