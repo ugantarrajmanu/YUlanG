@@ -45,7 +45,7 @@ app.get("/api", (req, res) => {
 
   // console.log(output);
 
-  res.send(output);
+  // res.send(output);
 
   fs.writeFileSync("./output_file/output", "");
   fs.unlinkSync("./output_file/output", (err) => {
