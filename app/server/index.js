@@ -3,7 +3,7 @@ const express = require("express");
 const fs = require("fs");
 const { exec } = require("child_process");
 
-const INTERPRETER_PATH = "yulang.exe";
+const INTERPRETER_PATH = "yulang.out";
 
 const app = express();
 
