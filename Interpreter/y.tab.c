@@ -76,13 +76,15 @@
     #include <stdbool.h>
 
     int yylex(void);
-    int yyerror(const char *s); 
+    int yyerror(const char *s);
 
     #define MAX_VARS 100
-    typedef struct {
-        char* type;
-        char* name;
+    typedef struct
+    {
+        char *type;
+        char *name;
         int value;
+        char *str;
     } symbol;
 
     symbol symbolTable[MAX_VARS];
@@ -90,22 +92,23 @@
     int symbol_count = 0;
 
     // Symbol table function;
-    int lookup(char* name);     // for loocking for a variable
-    void insert(char* name, char* type, int value);     // for inserting a variable
-    int getValue(char* name);       // for getting the value of a variable
-    void setValue(char* name, int value);       // for setting the value of a variable
+    int lookup(char *name);                                    // for loocking for a variable
+    void insert(char *name, char *type, int value, char *str); // for inserting a variable
+    int getIntValue(char *name);                               // for getting the value of a variable
+    char* getStringValue(char *name);                          // for getting the value of a variable
+    void setValue(char *name, int value, char *str);           // for setting the value of a variable
 
     // AST
     #include "AST.h"
 
-    //Evaluation function
-    int eval_expr(ASTNode* node);
-    void eval(ASTNode* node);
+    // Evaluation function
+    int eval_expr(ASTNode * node);
+    void eval(ASTNode * node);
 
 
 
 /* Line 189 of yacc.c  */
-#line 109 "y.tab.c"
+#line 112 "y.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -155,12 +158,16 @@
      YUG_DECLARATION = 278,
      YUG_INT = 279,
      YUG_EOS = 280,
-     YUG_IF_THEN = 281,
-     YUG_PRINT_INIT = 282,
-     YUG_PRINT_END = 283,
-     NUMBER = 284,
-     IDENTIFIER = 285,
-     STRING = 286
+     YUG_STR = 281,
+     YUG_IF_THEN = 282,
+     YUG_KO = 283,
+     YUG_SE = 284,
+     YUG_TAK = 285,
+     YUG_INIT = 286,
+     YUG_PRINT_END = 287,
+     NUMBER = 288,
+     IDENTIFIER = 289,
+     STRING = 290
    };
 #endif
 /* Tokens.  */
@@ -187,12 +194,16 @@
 #define YUG_DECLARATION 278
 #define YUG_INT 279
 #define YUG_EOS 280
-#define YUG_IF_THEN 281
-#define YUG_PRINT_INIT 282
-#define YUG_PRINT_END 283
-#define NUMBER 284
-#define IDENTIFIER 285
-#define STRING 286
+#define YUG_STR 281
+#define YUG_IF_THEN 282
+#define YUG_KO 283
+#define YUG_SE 284
+#define YUG_TAK 285
+#define YUG_INIT 286
+#define YUG_PRINT_END 287
+#define NUMBER 288
+#define IDENTIFIER 289
+#define STRING 290
 
 
 
@@ -202,17 +213,17 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 36 "parser1.y"
+#line 39 "parser1.y"
 
     int value;
-    char* id;
-    char* str;
-    struct ASTNode* node;
+    char *id;
+    char *str;
+    struct ASTNode *node;
 
 
 
 /* Line 214 of yacc.c  */
-#line 216 "y.tab.c"
+#line 227 "y.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -224,7 +235,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 228 "y.tab.c"
+#line 239 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -437,22 +448,22 @@ union yyalloc
 #endif
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  18
+#define YYFINAL  20
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   181
+#define YYLAST   242
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  32
+#define YYNTOKENS  36
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  9
+#define YYNNTS  10
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  35
+#define YYNRULES  42
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  73
+#define YYNSTATES  96
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   286
+#define YYMAXUTOK   290
 
 #define YYTRANSLATE(YYX)						\
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -488,7 +499,8 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,    26,    27,    28,    29,    30,    31
+      25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
+      35
 };
 
 #if YYDEBUG
@@ -496,38 +508,44 @@ static const yytype_uint8 yytranslate[] =
    YYRHS.  */
 static const yytype_uint8 yyprhs[] =
 {
-       0,     0,     3,     5,     8,    10,    12,    14,    21,    26,
-      33,    44,    46,    49,    52,    55,    57,    59,    61,    66,
-      71,    75,    79,    83,    87,    91,    95,    99,   103,   107,
-     111,   115,   119,   123,   127,   129
+       0,     0,     3,     5,     8,    10,    12,    14,    16,    23,
+      30,    35,    40,    47,    58,    70,    80,    82,    85,    88,
+      91,    94,    96,    98,   100,   102,   107,   112,   116,   120,
+     124,   128,   132,   136,   140,   144,   148,   152,   156,   160,
+     164,   168,   170
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
 static const yytype_int8 yyrhs[] =
 {
-      33,     0,    -1,    34,    -1,    33,    34,    -1,    35,    -1,
-      36,    -1,    39,    -1,    23,    30,     3,    40,    24,    25,
-      -1,    30,     3,    40,    25,    -1,    12,    40,    26,    21,
-      37,    22,    -1,    12,    40,    26,    21,    37,    22,    13,
-      21,    37,    22,    -1,    38,    -1,    38,    35,    -1,    38,
-      36,    -1,    38,    39,    -1,    35,    -1,    36,    -1,    39,
-      -1,    27,    31,    28,    25,    -1,    27,    40,    28,    25,
-      -1,    40,    15,    40,    -1,    40,    14,    40,    -1,    40,
-      17,    40,    -1,    40,    16,    40,    -1,    40,     7,    40,
-      -1,    40,     6,    40,    -1,    40,    11,    40,    -1,    40,
-      10,    40,    -1,    40,     9,    40,    -1,    40,     8,    40,
-      -1,    40,     4,    40,    -1,    40,     5,    40,    -1,    40,
-      18,    40,    -1,    20,    40,    19,    -1,    29,    -1,    30,
-      -1
+      37,     0,    -1,    38,    -1,    37,    38,    -1,    39,    -1,
+      40,    -1,    41,    -1,    44,    -1,    23,    34,     3,    45,
+      24,    25,    -1,    23,    34,     3,    35,    26,    25,    -1,
+      34,     3,    45,    25,    -1,    34,     3,    35,    25,    -1,
+      12,    45,    27,    21,    42,    22,    -1,    12,    45,    27,
+      21,    42,    22,    13,    21,    42,    22,    -1,    31,    34,
+      28,    45,    29,    45,    30,    25,    21,    42,    22,    -1,
+      31,    34,    28,    45,    30,    25,    21,    42,    22,    -1,
+      43,    -1,    43,    39,    -1,    43,    40,    -1,    43,    41,
+      -1,    43,    44,    -1,    39,    -1,    40,    -1,    44,    -1,
+      41,    -1,    31,    35,    32,    25,    -1,    31,    45,    32,
+      25,    -1,    45,    15,    45,    -1,    45,    14,    45,    -1,
+      45,    17,    45,    -1,    45,    16,    45,    -1,    45,     7,
+      45,    -1,    45,     6,    45,    -1,    45,    11,    45,    -1,
+      45,    10,    45,    -1,    45,     9,    45,    -1,    45,     8,
+      45,    -1,    45,     4,    45,    -1,    45,     5,    45,    -1,
+      45,    18,    45,    -1,    20,    45,    19,    -1,    33,    -1,
+      34,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    74,    74,    75,    78,    79,    80,    83,    84,    90,
-      91,    96,    99,   100,   101,   102,   103,   104,   109,   110,
-     113,   114,   115,   116,   118,   119,   121,   122,   123,   124,
-     126,   127,   128,   130,   132,   133
+       0,    79,    79,    80,    82,    83,    84,    85,    87,    89,
+      93,   102,   111,   112,   116,   119,   131,   133,   134,   135,
+     136,   137,   138,   139,   140,   144,   145,   147,   148,   149,
+     150,   152,   153,   155,   156,   157,   158,   160,   161,   162,
+     164,   166,   167
 };
 #endif
 
@@ -540,9 +558,10 @@ static const char *const yytname[] =
   "YUG_NOT_EQUAL", "YUG_EQUAL", "YUG_GREATER_EQUAL", "YUG_GREATER",
   "YUG_LESS_EQUAL", "YUG_LESS", "YUG_IF", "YUG_ELSE", "MINUS", "PLUS",
   "DIVIDE", "MULTIPLY", "YUG_NOT", "RPARAN", "LPARAN", "LBRACE", "RBRACE",
-  "YUG_DECLARATION", "YUG_INT", "YUG_EOS", "YUG_IF_THEN", "YUG_PRINT_INIT",
-  "YUG_PRINT_END", "NUMBER", "IDENTIFIER", "STRING", "$accept", "program",
-  "statement", "assign", "ifstatement", "blockstatement", "body",
+  "YUG_DECLARATION", "YUG_INT", "YUG_EOS", "YUG_STR", "YUG_IF_THEN",
+  "YUG_KO", "YUG_SE", "YUG_TAK", "YUG_INIT", "YUG_PRINT_END", "NUMBER",
+  "IDENTIFIER", "STRING", "$accept", "program", "statement", "assign",
+  "ifstatement", "forstatement", "blockstatement", "body",
   "printstatement", "expr", 0
 };
 #endif
@@ -555,26 +574,28 @@ static const yytype_uint16 yytoknum[] =
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
-     285,   286
+     285,   286,   287,   288,   289,   290
 };
 # endif
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    32,    33,    33,    34,    34,    34,    35,    35,    36,
-      36,    37,    38,    38,    38,    38,    38,    38,    39,    39,
-      40,    40,    40,    40,    40,    40,    40,    40,    40,    40,
-      40,    40,    40,    40,    40,    40
+       0,    36,    37,    37,    38,    38,    38,    38,    39,    39,
+      39,    39,    40,    40,    41,    41,    42,    43,    43,    43,
+      43,    43,    43,    43,    43,    44,    44,    45,    45,    45,
+      45,    45,    45,    45,    45,    45,    45,    45,    45,    45,
+      45,    45,    45
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     1,     2,     1,     1,     1,     6,     4,     6,
-      10,     1,     2,     2,     2,     1,     1,     1,     4,     4,
+       0,     2,     1,     2,     1,     1,     1,     1,     6,     6,
+       4,     4,     6,    10,    11,     9,     1,     2,     2,     2,
+       2,     1,     1,     1,     1,     4,     4,     3,     3,     3,
        3,     3,     3,     3,     3,     3,     3,     3,     3,     3,
-       3,     3,     3,     3,     1,     1
+       3,     1,     1
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -583,40 +604,44 @@ static const yytype_uint8 yyr2[] =
 static const yytype_uint8 yydefact[] =
 {
        0,     0,     0,     0,     0,     0,     2,     4,     5,     6,
-       0,    34,    35,     0,     0,     0,     0,     0,     1,     3,
+       7,     0,    41,    42,     0,     0,    42,     0,     0,     0,
+       1,     3,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,    33,
-      30,    31,    25,    24,    29,    28,    27,    26,    21,    20,
-      23,    22,    32,     0,     0,    18,    19,     8,    15,    16,
-       0,    11,    17,     0,     9,    12,    13,    14,     7,     0,
-       0,     0,    10
+       0,     0,     0,    40,    37,    38,    32,    31,    36,    35,
+      34,    33,    28,    27,    30,    29,    39,     0,     0,     0,
+       0,    25,    26,    11,    10,    21,    22,    24,     0,    16,
+      23,     0,     0,     0,     0,    12,    17,    18,    19,    20,
+       9,     8,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,    15,    13,     0,    14
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     5,     6,     7,     8,    60,    61,     9,    13
+      -1,     5,     6,    65,    66,    67,    68,    69,    70,    14
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -23
+#define YYPACT_NINF -75
 static const yytype_int16 yypact[] =
 {
-     102,   101,   -22,   139,    46,    31,   -23,   -23,   -23,   -23,
-     101,   -23,   -23,    30,    48,     5,    58,   101,   -23,   -23,
-     132,   101,   101,   101,   101,   101,   101,   101,   101,   101,
-     101,   101,   101,   101,    32,   101,    27,    35,    73,   -23,
-     147,    -5,   163,   163,    78,    78,    78,    78,    -1,    -1,
-      37,    37,    37,   102,    95,   -23,   -23,   -23,   -23,   -23,
-      49,   102,   -23,    45,    44,   -23,   -23,   -23,   -23,    64,
-     102,    75,   -23
+      34,   -19,   -31,   157,    15,    33,   -75,   -75,   -75,   -75,
+     -75,   -19,   -75,   -75,   107,    16,    19,    12,    44,   166,
+     -75,   -75,   165,   -19,   -19,   -19,   -19,   -19,   -19,   -19,
+     -19,   -19,   -19,   -19,   -19,   -19,    42,   169,   -19,    41,
+      47,    60,   122,   -75,   200,   213,   224,   224,    22,    22,
+      22,    22,    25,    25,    51,    51,    51,    34,    66,   144,
+      73,   -75,   -75,   -75,   -75,   -75,   -75,   -75,    64,    34,
+     -75,    68,    84,   -19,    85,   106,   -75,   -75,   -75,   -75,
+     -75,   -75,    90,   114,   120,   117,    34,    34,   123,   121,
+     124,    34,   -75,   -75,   134,   -75
 };
 
 /* YYPGOTO[NTERM-NUM].  */
-static const yytype_int8 yypgoto[] =
+static const yytype_int16 yypgoto[] =
 {
-     -23,   -23,   103,   -11,    54,    47,   -23,    65,    -3
+     -75,   -75,   140,     2,     4,     5,   -74,   -75,     6,    -3
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -626,62 +651,76 @@ static const yytype_int8 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
-      16,    23,    24,    25,    26,    27,    28,    20,    14,    29,
-      30,    31,    32,    33,    38,    31,    32,    33,    40,    41,
-      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
-      52,    18,    54,    36,    21,    22,    23,    24,    25,    26,
-      27,    28,    58,     1,    29,    30,    31,    32,    33,    17,
-      65,    35,    55,    53,     2,    33,    34,    69,     3,    58,
-      56,     4,    21,    22,    23,    24,    25,    26,    27,    28,
-      68,    64,    29,    30,    31,    32,    33,    21,    22,    23,
-      24,    25,    26,    27,    28,    70,    37,    29,    30,    31,
-      32,    33,    29,    30,    31,    32,    33,    72,    57,    21,
-      22,    23,    24,    25,    26,    27,    28,    59,    19,    29,
-      30,    31,    32,    33,     1,    66,     0,    71,    62,    63,
-       0,    10,     0,     0,    59,     2,    67,     0,     0,     3,
-      11,    12,     4,     0,     0,    62,    21,    22,    23,    24,
-      25,    26,    27,    28,     0,     0,    29,    30,    31,    32,
-      33,    39,    22,    23,    24,    25,    26,    27,    28,    10,
-       0,    29,    30,    31,    32,    33,     0,     0,    11,    12,
-      15,    25,    26,    27,    28,     0,     0,    29,    30,    31,
-      32,    33
+      18,    11,     7,    15,     8,     9,    10,     7,    22,     8,
+       9,    10,    89,    90,    12,    13,    42,    94,    19,    37,
+      44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
+      54,    55,    56,    20,    59,    60,    31,    32,    33,    34,
+      35,    33,    34,    35,    39,     1,     1,    38,    23,    24,
+      25,    26,    27,    28,    29,    30,     2,     2,    31,    32,
+      33,    34,    35,    57,     3,     3,    61,     4,     4,    35,
+      82,    76,    62,    77,    78,    79,    40,    23,    24,    25,
+      26,    27,    28,    29,    30,    63,    75,    31,    32,    33,
+      34,    35,    71,    80,    23,    24,    25,    26,    27,    28,
+      29,    30,    73,    74,    31,    32,    33,    34,    35,    81,
+      83,    23,    24,    25,    26,    27,    28,    29,    30,    84,
+      85,    31,    32,    33,    34,    35,    23,    24,    25,    26,
+      27,    28,    29,    30,    36,    86,    31,    32,    33,    34,
+      35,    87,    88,    92,    91,    21,    93,    64,    23,    24,
+      25,    26,    27,    28,    29,    30,    95,     0,    31,    32,
+      33,    34,    35,     0,     0,     0,     0,     0,    72,    23,
+      24,    25,    26,    27,    28,    29,    30,    11,     0,    31,
+      32,    33,    34,    35,    43,     0,    11,     0,     0,    11,
+      12,    16,    17,     0,     0,     0,     0,     0,     0,    12,
+      13,    41,    12,    13,    58,    24,    25,    26,    27,    28,
+      29,    30,     0,     0,    31,    32,    33,    34,    35,    25,
+      26,    27,    28,    29,    30,     0,     0,    31,    32,    33,
+      34,    35,    27,    28,    29,    30,     0,     0,    31,    32,
+      33,    34,    35
 };
 
 static const yytype_int8 yycheck[] =
 {
-       3,     6,     7,     8,     9,    10,    11,    10,    30,    14,
-      15,    16,    17,    18,    17,    16,    17,    18,    21,    22,
+       3,    20,     0,    34,     0,     0,     0,     5,    11,     5,
+       5,     5,    86,    87,    33,    34,    19,    91,     3,     3,
       23,    24,    25,    26,    27,    28,    29,    30,    31,    32,
-      33,     0,    35,    28,     4,     5,     6,     7,     8,     9,
-      10,    11,    53,    12,    14,    15,    16,    17,    18,     3,
-      61,     3,    25,    21,    23,    18,    26,    13,    27,    70,
-      25,    30,     4,     5,     6,     7,     8,     9,    10,    11,
-      25,    22,    14,    15,    16,    17,    18,     4,     5,     6,
-       7,     8,     9,    10,    11,    21,    28,    14,    15,    16,
-      17,    18,    14,    15,    16,    17,    18,    22,    25,     4,
-       5,     6,     7,     8,     9,    10,    11,    53,     5,    14,
-      15,    16,    17,    18,    12,    61,    -1,    70,    53,    24,
-      -1,    20,    -1,    -1,    70,    23,    61,    -1,    -1,    27,
-      29,    30,    30,    -1,    -1,    70,     4,     5,     6,     7,
-       8,     9,    10,    11,    -1,    -1,    14,    15,    16,    17,
-      18,    19,     5,     6,     7,     8,     9,    10,    11,    20,
-      -1,    14,    15,    16,    17,    18,    -1,    -1,    29,    30,
-      31,     8,     9,    10,    11,    -1,    -1,    14,    15,    16,
-      17,    18
+      33,    34,    35,     0,    37,    38,    14,    15,    16,    17,
+      18,    16,    17,    18,    32,    12,    12,    28,     4,     5,
+       6,     7,     8,     9,    10,    11,    23,    23,    14,    15,
+      16,    17,    18,    21,    31,    31,    25,    34,    34,    18,
+      73,    69,    25,    69,    69,    69,    32,     4,     5,     6,
+       7,     8,     9,    10,    11,    25,    22,    14,    15,    16,
+      17,    18,    26,    25,     4,     5,     6,     7,     8,     9,
+      10,    11,    29,    30,    14,    15,    16,    17,    18,    25,
+      25,     4,     5,     6,     7,     8,     9,    10,    11,    13,
+      30,    14,    15,    16,    17,    18,     4,     5,     6,     7,
+       8,     9,    10,    11,    27,    21,    14,    15,    16,    17,
+      18,    21,    25,    22,    21,     5,    22,    25,     4,     5,
+       6,     7,     8,     9,    10,    11,    22,    -1,    14,    15,
+      16,    17,    18,    -1,    -1,    -1,    -1,    -1,    24,     4,
+       5,     6,     7,     8,     9,    10,    11,    20,    -1,    14,
+      15,    16,    17,    18,    19,    -1,    20,    -1,    -1,    20,
+      33,    34,    35,    -1,    -1,    -1,    -1,    -1,    -1,    33,
+      34,    35,    33,    34,    35,     5,     6,     7,     8,     9,
+      10,    11,    -1,    -1,    14,    15,    16,    17,    18,     6,
+       7,     8,     9,    10,    11,    -1,    -1,    14,    15,    16,
+      17,    18,     8,     9,    10,    11,    -1,    -1,    14,    15,
+      16,    17,    18
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,    12,    23,    27,    30,    33,    34,    35,    36,    39,
-      20,    29,    30,    40,    30,    31,    40,     3,     0,    34,
-      40,     4,     5,     6,     7,     8,     9,    10,    11,    14,
-      15,    16,    17,    18,    26,     3,    28,    28,    40,    19,
-      40,    40,    40,    40,    40,    40,    40,    40,    40,    40,
-      40,    40,    40,    21,    40,    25,    25,    25,    35,    36,
-      37,    38,    39,    24,    22,    35,    36,    39,    25,    13,
-      21,    37,    22
+       0,    12,    23,    31,    34,    37,    38,    39,    40,    41,
+      44,    20,    33,    34,    45,    34,    34,    35,    45,     3,
+       0,    38,    45,     4,     5,     6,     7,     8,     9,    10,
+      11,    14,    15,    16,    17,    18,    27,     3,    28,    32,
+      32,    35,    45,    19,    45,    45,    45,    45,    45,    45,
+      45,    45,    45,    45,    45,    45,    45,    21,    35,    45,
+      45,    25,    25,    25,    25,    39,    40,    41,    42,    43,
+      44,    26,    24,    29,    30,    22,    39,    40,    41,    44,
+      25,    25,    45,    25,    13,    30,    21,    21,    25,    42,
+      42,    21,    22,    22,    42,    22
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1495,236 +1534,308 @@ yyreduce:
         case 4:
 
 /* Line 1455 of yacc.c  */
-#line 78 "parser1.y"
+#line 82 "parser1.y"
     { eval((yyvsp[(1) - (1)].node)); }
     break;
 
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 79 "parser1.y"
+#line 83 "parser1.y"
     { eval((yyvsp[(1) - (1)].node)); }
     break;
 
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 80 "parser1.y"
+#line 84 "parser1.y"
     { eval((yyvsp[(1) - (1)].node)); }
     break;
 
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 83 "parser1.y"
-    { (yyval.node) = makeVarDeclNode("int", makeIDNode(strdup((yyvsp[(2) - (6)].id))), (yyvsp[(4) - (6)].node)); }
+#line 85 "parser1.y"
+    { eval((yyvsp[(1) - (1)].node)); }
     break;
 
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 84 "parser1.y"
-    { 
-                if (lookup((yyvsp[(1) - (4)].id)) != -1) { (yyval.node) = makeAssignNode(makeIDNode(strdup((yyvsp[(1) - (4)].id))), (yyvsp[(3) - (4)].node)); } 
-                else { printf("Error: Variable \'%s\' is not declared.....\n", (yyvsp[(1) - (4)].id)); exit(1); }
-            }
+#line 87 "parser1.y"
+    { (yyval.node) = makeVarDeclNode("int", makeIDNode(strdup((yyvsp[(2) - (6)].id))), (yyvsp[(4) - (6)].node)); }
     break;
 
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 90 "parser1.y"
-    { (yyval.node) = makeIfNode((yyvsp[(2) - (6)].node), (yyvsp[(5) - (6)].node), NULL); }
+#line 89 "parser1.y"
+    { 
+                (yyval.node) = makeVarDeclNode("string", makeIDNode(strdup((yyvsp[(2) - (6)].id))), makeStringLiteralNode(strdup((yyvsp[(4) - (6)].str))));
+            }
     break;
 
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 91 "parser1.y"
+#line 93 "parser1.y"
     {
-                    (yyval.node) = makeIfNode((yyvsp[(2) - (10)].node), (yyvsp[(5) - (10)].node), (yyvsp[(9) - (10)].node));
+                if (lookup((yyvsp[(1) - (4)].id)) != -1) {
+                    (yyval.node) = makeAssignNode("int", makeIDNode(strdup((yyvsp[(1) - (4)].id))), (yyvsp[(3) - (4)].node));
+                } else {
+                    printf("Error: Variable \'%s\' is not declared.....\n", (yyvsp[(1) - (4)].id));
+                    exit(1);
                 }
+            }
     break;
 
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 96 "parser1.y"
-    { (yyval.node) = makeBlockNode((yyvsp[(1) - (1)].node)); }
+#line 102 "parser1.y"
+    {
+                if (lookup((yyvsp[(1) - (4)].id)) != -1) {
+                    (yyval.node) = makeAssignNode("string", makeIDNode(strdup((yyvsp[(1) - (4)].id))), makeStringLiteralNode(strdup((yyvsp[(3) - (4)].str))));
+                } else {
+                    printf("Error: Variable \'%s\' is not declared.....\n", (yyvsp[(1) - (4)].id));
+                    exit(1);
+                }
+            }
     break;
 
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 99 "parser1.y"
-    { (yyval.node) = makeBodyNode((yyvsp[(1) - (2)].node), (yyvsp[(2) - (2)].node)); }
+#line 111 "parser1.y"
+    { (yyval.node) = makeIfNode((yyvsp[(2) - (6)].node), (yyvsp[(5) - (6)].node), NULL); }
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 100 "parser1.y"
-    { (yyval.node) = makeBodyNode((yyvsp[(1) - (2)].node), (yyvsp[(2) - (2)].node)); }
+#line 112 "parser1.y"
+    {
+                (yyval.node) = makeIfNode((yyvsp[(2) - (10)].node), (yyvsp[(5) - (10)].node), (yyvsp[(9) - (10)].node));
+            }
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 101 "parser1.y"
-    { (yyval.node) = makeBodyNode((yyvsp[(1) - (2)].node), (yyvsp[(2) - (2)].node)); }
+#line 116 "parser1.y"
+    { 
+                (yyval.node) = makeForNode(makeIDNode(strdup((yyvsp[(2) - (11)].id))), (yyvsp[(4) - (11)].node), (yyvsp[(6) - (11)].node), (yyvsp[(10) - (11)].node)); 
+            }
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 102 "parser1.y"
-    { (yyval.node) = makeBodyNode(NULL, (yyvsp[(1) - (1)].node)); }
+#line 119 "parser1.y"
+    {
+                int idx = lookup((yyvsp[(2) - (9)].id));
+                if (idx != -1) {
+                    (yyval.node) = makeForNode(makeIDNode(strdup((yyvsp[(2) - (9)].id))), makeLiteralNode(symbolTable[idx].value), (yyvsp[(4) - (9)].node), (yyvsp[(8) - (9)].node));                    
+                } else {
+                    printf("Error: Variable \'%s\' is not declared.....\n", (yyvsp[(2) - (9)].id));
+                    exit(1);
+                }
+            }
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 103 "parser1.y"
-    { (yyval.node) = makeBodyNode(NULL, (yyvsp[(1) - (1)].node)); }
+#line 131 "parser1.y"
+    { (yyval.node) = makeBlockNode((yyvsp[(1) - (1)].node)); }
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 104 "parser1.y"
-    { (yyval.node) = makeBodyNode(NULL, (yyvsp[(1) - (1)].node)); }
+#line 133 "parser1.y"
+    { (yyval.node) = makeBodyNode((yyvsp[(1) - (2)].node), (yyvsp[(2) - (2)].node)); }
     break;
 
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 109 "parser1.y"
-    { (yyval.node) = makePrintNode(NULL, (yyvsp[(2) - (4)].str)); }
+#line 134 "parser1.y"
+    { (yyval.node) = makeBodyNode((yyvsp[(1) - (2)].node), (yyvsp[(2) - (2)].node)); }
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 110 "parser1.y"
-    { (yyval.node) = makePrintNode((yyvsp[(2) - (4)].node), NULL); }
+#line 135 "parser1.y"
+    { (yyval.node) = makeBodyNode((yyvsp[(1) - (2)].node), (yyvsp[(2) - (2)].node)); }
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 113 "parser1.y"
-    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), PLUS, (yyvsp[(3) - (3)].node)); }
+#line 136 "parser1.y"
+    { (yyval.node) = makeBodyNode((yyvsp[(1) - (2)].node), (yyvsp[(2) - (2)].node)); }
     break;
 
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 114 "parser1.y"
-    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), MINUS, (yyvsp[(3) - (3)].node)); }
+#line 137 "parser1.y"
+    { (yyval.node) = makeBodyNode(NULL, (yyvsp[(1) - (1)].node)); }
     break;
 
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 115 "parser1.y"
-    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), MULTIPLY, (yyvsp[(3) - (3)].node)); }
+#line 138 "parser1.y"
+    { (yyval.node) = makeBodyNode(NULL, (yyvsp[(1) - (1)].node)); }
     break;
 
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 116 "parser1.y"
-    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), DIVIDE, (yyvsp[(3) - (3)].node)); }
+#line 139 "parser1.y"
+    { (yyval.node) = makeBodyNode(NULL, (yyvsp[(1) - (1)].node)); }
     break;
 
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 118 "parser1.y"
-    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), YUG_EQUAL, (yyvsp[(3) - (3)].node)); }
+#line 140 "parser1.y"
+    { (yyval.node) = makeBodyNode(NULL, (yyvsp[(1) - (1)].node)); }
     break;
 
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 119 "parser1.y"
-    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), YUG_NOT_EQUAL, (yyvsp[(3) - (3)].node)); }
+#line 144 "parser1.y"
+    { (yyval.node) = makePrintNode(makeStringLiteralNode(strdup((yyvsp[(2) - (4)].str)))); }
     break;
 
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 121 "parser1.y"
-    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), YUG_LESS, (yyvsp[(3) - (3)].node)); }
+#line 145 "parser1.y"
+    { (yyval.node) = makePrintNode((yyvsp[(2) - (4)].node)); }
     break;
 
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 122 "parser1.y"
-    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), YUG_LESS_EQUAL, (yyvsp[(3) - (3)].node)); }
+#line 147 "parser1.y"
+    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), PLUS, (yyvsp[(3) - (3)].node)); }
     break;
 
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 123 "parser1.y"
-    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), YUG_GREATER, (yyvsp[(3) - (3)].node)); }
+#line 148 "parser1.y"
+    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), MINUS, (yyvsp[(3) - (3)].node)); }
     break;
 
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 124 "parser1.y"
-    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), YUG_GREATER_EQUAL, (yyvsp[(3) - (3)].node)); }
+#line 149 "parser1.y"
+    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), MULTIPLY, (yyvsp[(3) - (3)].node)); }
     break;
 
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 126 "parser1.y"
-    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), YUG_OR, (yyvsp[(3) - (3)].node)); }
+#line 150 "parser1.y"
+    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), DIVIDE, (yyvsp[(3) - (3)].node)); }
     break;
 
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 127 "parser1.y"
-    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), YUG_AND, (yyvsp[(3) - (3)].node)); }
+#line 152 "parser1.y"
+    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), YUG_EQUAL, (yyvsp[(3) - (3)].node)); }
     break;
 
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 128 "parser1.y"
-    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), YUG_NOT, (yyvsp[(3) - (3)].node)); }
+#line 153 "parser1.y"
+    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), YUG_NOT_EQUAL, (yyvsp[(3) - (3)].node)); }
     break;
 
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 130 "parser1.y"
-    { (yyval.node) = (yyvsp[(2) - (3)].node); }
+#line 155 "parser1.y"
+    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), YUG_LESS, (yyvsp[(3) - (3)].node)); }
     break;
 
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 132 "parser1.y"
-    { (yyval.node) = makeLiteralNode((yyvsp[(1) - (1)].value)); }
+#line 156 "parser1.y"
+    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), YUG_LESS_EQUAL, (yyvsp[(3) - (3)].node)); }
     break;
 
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 133 "parser1.y"
+#line 157 "parser1.y"
+    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), YUG_GREATER, (yyvsp[(3) - (3)].node)); }
+    break;
+
+  case 36:
+
+/* Line 1455 of yacc.c  */
+#line 158 "parser1.y"
+    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), YUG_GREATER_EQUAL, (yyvsp[(3) - (3)].node)); }
+    break;
+
+  case 37:
+
+/* Line 1455 of yacc.c  */
+#line 160 "parser1.y"
+    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), YUG_OR, (yyvsp[(3) - (3)].node)); }
+    break;
+
+  case 38:
+
+/* Line 1455 of yacc.c  */
+#line 161 "parser1.y"
+    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), YUG_AND, (yyvsp[(3) - (3)].node)); }
+    break;
+
+  case 39:
+
+/* Line 1455 of yacc.c  */
+#line 162 "parser1.y"
+    { (yyval.node) = makeBinExprNode((yyvsp[(1) - (3)].node), YUG_NOT, (yyvsp[(3) - (3)].node)); }
+    break;
+
+  case 40:
+
+/* Line 1455 of yacc.c  */
+#line 164 "parser1.y"
+    { (yyval.node) = (yyvsp[(2) - (3)].node); }
+    break;
+
+  case 41:
+
+/* Line 1455 of yacc.c  */
+#line 166 "parser1.y"
+    { (yyval.node) = makeLiteralNode((yyvsp[(1) - (1)].value)); }
+    break;
+
+  case 42:
+
+/* Line 1455 of yacc.c  */
+#line 167 "parser1.y"
     { (yyval.node) = makeIDNode((yyvsp[(1) - (1)].id)); }
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1728 "y.tab.c"
+#line 1839 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1936,22 +2047,21 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 135 "parser1.y"
+#line 168 "parser1.y"
 
 
 int main() {
     return yyparse();
 }
 
-int yyerror(const char* s) {
+int yyerror(const char *s) {
     fprintf(stderr, "Error: %s\n", s);
     return 0;
 }
 
-
 // Symbol Table function
-int lookup(char* name) {
-    for (int i = 0; i < symbol_count; i++) {
+int lookup(char *name) {
+    for (int i = 0; i < symbol_count; i++)  {
         if (strcmp(symbolTable[i].name, name) == 0) {
             return i;
         }
@@ -1959,57 +2069,85 @@ int lookup(char* name) {
     return -1;
 }
 
-void insert(char* name, char* type, int value) {
-    int index = lookup(name);
-    if (index == -1 && symbol_count < MAX_VARS) {
+void insert(char *name, char *type, int value, char *str) {
+    int idx = lookup(name);
+    if (idx == -1 && symbol_count < MAX_VARS) {
         symbolTable[symbol_count].name = name;
         symbolTable[symbol_count].type = type;
         symbolTable[symbol_count].value = value;
+        symbolTable[symbol_count].str = str;
         symbol_count++;
-    } else if (index != -1) {
+    }
+    else if (idx != -1) {
         // throw error
-        printf("Error: Variable \'%s\' already declared.....\n", name);
+        printf("ErrorInserting: Variable \'%s\' already declared.....\n", name);
         exit(1);
     }
 }
 
-int getValue(char* name){
+int getIntValue(char *name) {
     int index = lookup(name);
     if (index != -1) {
         return symbolTable[index].value;
-    } else {
+    }
+    else {
         // throw error
-        printf("Error: Variable \'%s\' is not declared.....\n", name);
+        printf("ErrorGetting: Variable \'%s\' is not declared.....\n", name);
         exit(1);
     }
 }
 
-void setValue(char* name, int value) {
+char *getStringValue(char *name) {
     int index = lookup(name);
     if (index != -1) {
-        symbolTable[index].value = value;
+        return symbolTable[index].str;
     } else {
-        printf("Error: Variable \'%s\' is not declared.....\n", name);
+        // throw error
+        printf("ErrorGetting: Variable \'%s\' is not declared.....\n", name);
+        exit(1);
+    }
+}
+
+void setValue(char *name, int value, char *str) {
+    int index = lookup(name);
+    if (index != -1) {
+        if (str == NULL && symbolTable[index].type == "int") { 
+            symbolTable[index].value = value;
+        } else if (str && symbolTable[index].type == "string") {
+            symbolTable[index].str = str;
+        } else {
+            printf("ErrorSetting: Variable \'%s\' is not declared.....\n", name);
+            exit(1);
+        }
+    } else {
+        printf("ErrorSetting: Variable \'%s\' is not declared.....\n", name);
     }
 }
 
 // AST Functions
-ASTNode* makeLiteralNode (int value) {
-    ASTNode* newNode = (ASTNode*)malloc(sizeof(ASTNode));
+ASTNode *makeLiteralNode(int value) {
+    ASTNode *newNode = (ASTNode *)malloc(sizeof(ASTNode));
     newNode->type = Literal;
     newNode->Literal.value = value;
     return newNode;
 }
 
-ASTNode* makeIDNode (char* value) {
-    ASTNode* newNode = (ASTNode*)malloc(sizeof(ASTNode));
+ASTNode *makeStringLiteralNode(char *value) {
+    ASTNode *newNode = (ASTNode *)malloc(sizeof(ASTNode));
+    newNode->type = StringLiteral;
+    newNode->StringLiteral.value = value;
+    return newNode;
+}
+
+ASTNode *makeIDNode(char *value) {
+    ASTNode *newNode = (ASTNode *)malloc(sizeof(ASTNode));
     newNode->type = Identifier;
     newNode->Identifier.value = value;
     return newNode;
 }
 
-ASTNode* makeBinExprNode(ASTNode* left, int op, ASTNode* right) {
-    ASTNode* newNode = (ASTNode*)malloc(sizeof(ASTNode));
+ASTNode *makeBinExprNode(ASTNode *left, int op, ASTNode *right) {
+    ASTNode *newNode = (ASTNode *)malloc(sizeof(ASTNode));
     newNode->type = BinaryExpression;
     newNode->BinaryExpression.left = left;
     newNode->BinaryExpression.op = op;
@@ -2017,25 +2155,26 @@ ASTNode* makeBinExprNode(ASTNode* left, int op, ASTNode* right) {
     return newNode;
 }
 
-ASTNode* makeVarDeclNode(char* kind, ASTNode* id, ASTNode* init) {
-    ASTNode* newNode = (ASTNode*)malloc(sizeof(ASTNode));
+ASTNode *makeVarDeclNode(char *type, ASTNode *id, ASTNode *init) {
+    ASTNode *newNode = (ASTNode *)malloc(sizeof(ASTNode));
     newNode->type = VariableDeclaration;
-    newNode->VariableDeclaration.kind = kind;
-    newNode->VariableDeclaration.id =  id;
-    newNode->VariableDeclaration.init = init; 
+    newNode->VariableDeclaration.type = type;
+    newNode->VariableDeclaration.id = id;
+    newNode->VariableDeclaration.init = init;
     return newNode;
 }
 
-ASTNode* makeAssignNode(ASTNode* id, ASTNode* value) {
-    ASTNode* newNode = (ASTNode*)malloc(sizeof(ASTNode));
+ASTNode *makeAssignNode(char *type, ASTNode *id, ASTNode *value) {
+    ASTNode *newNode = (ASTNode *)malloc(sizeof(ASTNode));
     newNode->type = Assignment;
+    newNode->Assignment.type = type;
     newNode->Assignment.id = id;
     newNode->Assignment.value = value;
     return newNode;
 }
 
-ASTNode* makeIfNode(ASTNode* test, ASTNode* consequent, ASTNode* alternate) {
-    ASTNode* newNode = (ASTNode*)malloc(sizeof(ASTNode));
+ASTNode *makeIfNode(ASTNode *test, ASTNode *consequent, ASTNode *alternate) {
+    ASTNode *newNode = (ASTNode *)malloc(sizeof(ASTNode));
     newNode->type = IfStatement;
     newNode->IfStatement.test = test;
     newNode->IfStatement.consequent = consequent;
@@ -2043,65 +2182,88 @@ ASTNode* makeIfNode(ASTNode* test, ASTNode* consequent, ASTNode* alternate) {
     return newNode;
 }
 
-ASTNode* makeBlockNode(ASTNode* body) {
-    ASTNode* newNode = (ASTNode*)malloc(sizeof(ASTNode));
+ASTNode *makeBlockNode(ASTNode *body) {
+    ASTNode *newNode = (ASTNode *)malloc(sizeof(ASTNode));
     newNode->type = BlockStatement;
     newNode->BlockStatement.body = body;
     return newNode;
 }
 
-ASTNode* makeBodyNode(ASTNode* insideBody, ASTNode* value) {
-    ASTNode* newNode = (ASTNode*)malloc(sizeof(ASTNode));
+ASTNode *makeBodyNode(ASTNode *insideBody, ASTNode *value) {
+    ASTNode *newNode = (ASTNode *)malloc(sizeof(ASTNode));
     newNode->type = Body;
     newNode->Body.InsideBody = insideBody;
     newNode->Body.value = value;
     return newNode;
-
 }
 
-ASTNode* makePrintNode(ASTNode* value, char* strValue) {
-    ASTNode* newNode = (ASTNode*)malloc(sizeof(ASTNode));
+ASTNode *makePrintNode(ASTNode *value) {
+    ASTNode *newNode = (ASTNode *)malloc(sizeof(ASTNode));
     newNode->type = PrintStatement;
     newNode->PrintStatement.value = value;
-    newNode->PrintStatement.strValue = strValue;
     return newNode;
 }
 
+ASTNode *makeForNode(ASTNode *id, ASTNode *start, ASTNode *end, ASTNode *body) {
+    ASTNode *newNode = (ASTNode *)malloc(sizeof(ASTNode));
+    newNode->type = ForStatement;
+    newNode->ForStatement.id = id;
+    newNode->ForStatement.start = start;
+    newNode->ForStatement.end = end;
+    newNode->ForStatement.body = body;
+}
 
-
-
-
-
-
-
-void eval(ASTNode* node) {
-    if (node == NULL) return;
-    int expr_value; char* id_value;
+void eval(ASTNode *node) {
+    if (node == NULL)
+        return;
+    int expr_value;
+    char *id_value;
     switch (node->type) {
         case VariableDeclaration:
-            expr_value = eval_expr(node->VariableDeclaration.init);
             id_value = node->VariableDeclaration.id->Identifier.value;
-            printf("%s %s %d\n", node->VariableDeclaration.kind, id_value, expr_value);
-            insert(id_value, node->VariableDeclaration.kind, expr_value);
+            if (node->VariableDeclaration.type == "int") {
+                expr_value = eval_expr(node->VariableDeclaration.init);
+                insert(id_value, node->VariableDeclaration.type, expr_value, NULL);
+            } else if (node->VariableDeclaration.type == "string") {
+                char* str_value = node->VariableDeclaration.init->StringLiteral.value;
+                insert(id_value, node->VariableDeclaration.type, -999, str_value);
+            }
+            // printf("%s %s %d\n", node->VariableDeclaration.type, id_value, expr_value);)
             break;
-        
+
         case Assignment:
-            expr_value = eval_expr(node->Assignment.value);
             id_value = node->Assignment.id->Identifier.value;
-            printf("%s %d\n",id_value, expr_value);
             int idx = lookup(id_value);
-            setValue(id_value, expr_value);
+            if (node->Assignment.type == symbolTable[idx].type) {
+                if (symbolTable[idx].type == "int") {
+                    expr_value = eval_expr(node->Assignment.value);
+                    setValue(id_value, expr_value, NULL);
+                } else if (symbolTable[idx].type == "string"){
+                    setValue(id_value, -999, getStringValue(id_value));
+                }
+            } else {
+                exit(1);
+            }
+            // printf("%s %d\n",id_value, expr_value);
             break;
 
         case PrintStatement:
-            if (node->PrintStatement.value == NULL) {
-                printf("%s\n", node->PrintStatement.strValue);
+            if (node->PrintStatement.value->type == Identifier) {
+                char* id = node->PrintStatement.value->Identifier.value;
+                int idx = lookup(id);
+                if ( symbolTable[idx].type == "int" ) {
+                    printf("%d\n", getIntValue(id));
+                } else if ( symbolTable[idx].type == "string" ) {
+                    printf("%s\n", getStringValue(id));
+                }
+            }else if (node->PrintStatement.value->type == StringLiteral) {
+                    printf("%s\n", node->PrintStatement.value->StringLiteral.value);
             } else {
-                expr_value = eval_expr(node->PrintStatement.value);
-                printf("%d\n", expr_value);
+                int eval_val = eval_expr(node->PrintStatement.value);
+                printf("%d\n", eval_val);
             }
             break;
-        
+
         case IfStatement:
             if (eval_expr(node->IfStatement.test)) {
                 eval(node->IfStatement.consequent);
@@ -2109,7 +2271,42 @@ void eval(ASTNode* node) {
                 eval(node->IfStatement.alternate);
             }
             break;
-        
+
+        case ForStatement:
+            char* id = node->ForStatement.id->Identifier.value;
+            int i = node->ForStatement.start->Literal.value;
+            bool inST = false;
+            if(lookup(id) != -1) {
+                inST = true;                
+            }
+            // if (lookup(id) == -1) {
+            //     // printf("hello\n");
+            //     i = node->ForStatement.start->Literal.value;
+            //     insert(id, "int", i, NULL);
+            // } else {
+            //     // printf("world");
+            //     inST = true;
+            //     i = getIntValue(id);
+            // }
+
+            insert(id, "int", i, NULL);
+            int end = node->ForStatement.end->Literal.value;
+            // printf("No way.....%d\t%d\n", i, end);
+
+
+            for (; i < end; i++) {
+                setValue(node->ForStatement.id->Identifier.value, i, NULL);
+                eval(node->ForStatement.body);
+            }
+
+            if (inST) {
+                setValue(id, i, NULL);
+            } else {
+                symbol_count--;
+            }
+            // printf("\n%d\n", lookup(node->ForStatement.id->Identifier.value));
+            break;
+
         case BlockStatement:
             eval(node->BlockStatement.body);
             break;
@@ -2118,45 +2315,66 @@ void eval(ASTNode* node) {
             eval(node->Body.InsideBody);
             eval(node->Body.value);
             break;
-        
+
         default:
             exit(1);
-        
-        
+    };   
+};
+
+char* strExpr(ASTNode *node) {
+    switch (node->type)
+    {
+    case Identifier:
+        return getStringValue(node->Identifier.value);
+        break;
+    
+    default:
+        break;
     }
 }
 
-int eval_expr(ASTNode* node) {
+int eval_expr(ASTNode *node) {
     switch (node->type) {
         case Literal:
             return node->Literal.value;
         case Identifier:
-            return getValue(node->Identifier.value);
+            return getIntValue(node->Identifier.value);
         case BinaryExpression:
             int l = eval_expr(node->BinaryExpression.left);
             int r = eval_expr(node->BinaryExpression.right);
             switch (node->BinaryExpression.op) {
-                case PLUS: return l + r;
-                case MINUS: return l - r;
-                case MULTIPLY: return l * r;
-                case DIVIDE: return l / r;
+                case PLUS:
+                    return l + r;
+                case MINUS:
+                    return l - r;
+                case MULTIPLY:
+                    return l * r;
+                case DIVIDE:
+                    return l / r;
 
-                case YUG_EQUAL: return l == r;
-                case YUG_NOT_EQUAL: return l != r;
-                case YUG_GREATER: return l > r;
-                case YUG_GREATER_EQUAL: return l >= r;
-                case YUG_LESS: return l < r;
-                case YUG_LESS_EQUAL: return l <= r;
+                case YUG_EQUAL:
+                    return l == r;
+                case YUG_NOT_EQUAL:
+                    return l != r;
+                case YUG_GREATER:
+                    return l > r;
+                case YUG_GREATER_EQUAL:
+                    return l >= r;
+                case YUG_LESS:
+                    return l < r;
+                case YUG_LESS_EQUAL:
+                    return l <= r;
 
-                case YUG_AND: return l && r;
-                case YUG_OR: return l || r;
+                case YUG_AND:
+                    return l && r;
+                case YUG_OR:
+                    return l || r;
+                default:
+                    exit(1);
             }
-        
+
         default:
             exit(1);
-        
-    }
-    
-}
-
+    };
+};
 

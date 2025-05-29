@@ -62,12 +62,16 @@
      YUG_DECLARATION = 278,
      YUG_INT = 279,
      YUG_EOS = 280,
-     YUG_IF_THEN = 281,
-     YUG_PRINT_INIT = 282,
-     YUG_PRINT_END = 283,
-     NUMBER = 284,
-     IDENTIFIER = 285,
-     STRING = 286
+     YUG_STR = 281,
+     YUG_IF_THEN = 282,
+     YUG_KO = 283,
+     YUG_SE = 284,
+     YUG_TAK = 285,
+     YUG_INIT = 286,
+     YUG_PRINT_END = 287,
+     NUMBER = 288,
+     IDENTIFIER = 289,
+     STRING = 290
    };
 #endif
 /* Tokens.  */
@@ -94,12 +98,16 @@
 #define YUG_DECLARATION 278
 #define YUG_INT 279
 #define YUG_EOS 280
-#define YUG_IF_THEN 281
-#define YUG_PRINT_INIT 282
-#define YUG_PRINT_END 283
-#define NUMBER 284
-#define IDENTIFIER 285
-#define STRING 286
+#define YUG_STR 281
+#define YUG_IF_THEN 282
+#define YUG_KO 283
+#define YUG_SE 284
+#define YUG_TAK 285
+#define YUG_INIT 286
+#define YUG_PRINT_END 287
+#define NUMBER 288
+#define IDENTIFIER 289
+#define STRING 290
 
 
 
@@ -109,17 +117,17 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 36 "parser1.y"
+#line 39 "parser1.y"
 
     int value;
-    char* id;
-    char* str;
-    struct ASTNode* node;
+    char *id;
+    char *str;
+    struct ASTNode *node;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 123 "y.tab.h"
+#line 131 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

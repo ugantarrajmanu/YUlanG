@@ -132,10 +132,14 @@ blockstatement : body { $$ = makeBlockNode($1); };
 
 body : body assign { $$ = makeBodyNode($1, $2); }
         | body ifstatement { $$ = makeBodyNode($1, $2); }
+        | body forstatement { $$ = makeBodyNode($1, $2); }
         | body printstatement { $$ = makeBodyNode($1, $2); }
         | assign { $$ = makeBodyNode(NULL, $1); }
         | ifstatement { $$ = makeBodyNode(NULL, $1); }
-        | printstatement { $$ = makeBodyNode(NULL, $1); };
+        | printstatement { $$ = makeBodyNode(NULL, $1); }
+        | forstatement { $$ = makeBodyNode(NULL, $1); }
+        ;
+        
 
 printstatement : YUG_INIT STRING YUG_PRINT_END YUG_EOS { $$ = makePrintNode(makeStringLiteralNode(strdup($2))); }
         | YUG_INIT expr YUG_PRINT_END YUG_EOS { $$ = makePrintNode($2); };
