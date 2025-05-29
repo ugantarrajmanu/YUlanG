@@ -29,4 +29,8 @@ app.post("/api", (req, res) => {
   });
 });
 
+app.get("/", (req, res) => {
+  res.send("Server Running.....");
+});
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
