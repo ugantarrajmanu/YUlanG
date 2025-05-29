@@ -4,10 +4,6 @@ import { useRef } from "react";
 
 export function Terminal( { outputs } ) {
   const outputRef = useRef();
-  
-  // useEffect(() => {
-  //   console.log(outputs)
-  // }, [outputs]);
 
   return (
     <div ref={outputRef} className="output" style={{padding: "1rem"}}>
