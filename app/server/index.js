@@ -23,11 +23,12 @@ app.use(cors({
       callback(new Error("Not allowed by CORS"));
     }
   },
-  methods:["GET", "POST"],
+  methods:["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type"],
 }));
 
 app.use(express.json());
+
 
 app.post("/api", (req, res) => {
   const received_code = req.body.code.split("\n").join(" ");
