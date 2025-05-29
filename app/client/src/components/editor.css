@@ -1,7 +1,7 @@
 .second-editor-container {
   display: flex;
   flex-direction: column;
-  height: 80vh;
+  height: 70vh;
   width: 90vw;
   padding: 1rem;
 }
@@ -40,11 +40,17 @@
 .editor-container {
   height: inherit;
   width: inherit;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   border-radius: 1rem;
   box-shadow: 0px 0px 7px 0px #ffc6ac;
 }
 
 .code-editor {
-  border-radius: 1rem;
-  overflow: auto;
+  height: inherit;
+  width: inherit;
+  /* border-radius: 1rem; */
+  color: "blue";
+  overflow: hidden;
 }
+

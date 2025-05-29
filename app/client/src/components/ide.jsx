@@ -6,7 +6,15 @@ const OUTPUT_PATH = "../server/output_file/output";
 export function Ide() {
   const [outputs, setOutputs] = useState(["\t\tWelcome to the YUlang!"]);
   const [code, setCode] = useState(
-    `arey yug a = 5 int hai\narey yug b = 7 int hai\n`
+    `arey yug a = "hello" string hai
+
+
+yug i ko 5 se 10 tak lejana hai {
+    yug i likhna hai
+} 
+
+yug i likhna hai
+yug 50 likhna hai`
   );
 
   const executeCode = async () => {

@@ -10,9 +10,6 @@ body {
   }
 
 .main-editor-container {
-    /* height: auto;
-    width: auto; */
-    /* margin-top: 0.3rem; */
     align-items: center;
     border-color: black;
     overflow: hidden;

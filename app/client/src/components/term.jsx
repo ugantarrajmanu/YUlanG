@@ -8,7 +8,12 @@ export function Terminal( { outputs } ) {
   return (
     <div ref={outputRef} className="output" style={{padding: "1rem"}}>
       {outputs && outputs.map((output, key) => (
-        <div key={key} style={{color: "white"}}>{">\t\t" + output}</div>
+        <div key={key} style={{
+          color: "violet",
+          fontFamily: "monospace",
+          fontSize: "1rem",
+          marginBottom: "1rem"
+        }}>{">\t\t" + output}</div>
       ))}
     </div>
   );

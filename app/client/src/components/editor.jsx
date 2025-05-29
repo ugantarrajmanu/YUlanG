@@ -13,14 +13,8 @@ export const YEditor = ({ onClick, code, setCode }) => {
       <div className="editor-container">
         <Editor
           className="code-editor"
-          theme="vs-dark"
+          theme="hc-black"
           defaultValue={code}
-          option={{
-            fontSize: 20,
-            padding: {
-              top: 50,
-            },
-          }}
           onChange={(code) => {
             setCode(code);
           }}

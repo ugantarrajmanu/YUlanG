@@ -14,26 +14,28 @@ app.use(express.json());
 app.post("/", (req, res) => {
   const received_code = req.body.code.split("\n").join(" ");
   
-  const comm = `echo ${received_code} | ${INTERPRETER_PATH}`;
+  const comm = `echo ${received_code} | ${INTERPRETER_PATH} > output`;
 
   exec(comm, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`error: ${error.name}`);
-    }
-    if (stderr) {
-      console.error(`stderr: ${stderr}`);
-      fs.writeFileSync("./output_file/output", stderr);
-    }
+    // if (error) {
+    //   console.error(`error: ${error.name}`);
+    // }
+    // if (stderr) {
+    //   console.error(`stderr: ${stderr}`);
+    // }
 
     if (!stderr && !error) {
-      fs.writeFileSync("./output_file/output", stdout);
-      res.send("Received");
+      console.log(`${stdout}`);
+      // fs.writeFileSync("./output_file/output", stdout);
     }
+    res.send("Received");
   });
 });
 
 app.get("/", (req, res) => {
-  const output = fs.readFileSync("./output_file/output", "utf-8");
+  const output = fs.readFileSync("./output");
+
+  // console.log(output);
 
   res.send(output);
 

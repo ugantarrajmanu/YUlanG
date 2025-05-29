@@ -2251,6 +2251,10 @@ void eval(ASTNode *node) {
             if (node->PrintStatement.value->type == Identifier) {
                 char* id = node->PrintStatement.value->Identifier.value;
                 int idx = lookup(id);
+                if ( idx == -1 ) {
+                    printf("Error: Variable \'%s\' is not declared.....\n", id);
+                    exit(1);
+                }
                 if ( symbolTable[idx].type == "int" ) {
                     printf("%d\n", getIntValue(id));
                 } else if ( symbolTable[idx].type == "string" ) {
