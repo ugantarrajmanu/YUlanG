@@ -27,7 +27,9 @@ string       \"([^\\\"]|\\.)*\"
 "se"                { return YUG_SE; }
 "tak lejana"       { return YUG_TAK; }
 
+"string"            { return YUG_STR; }
 {string}            { yylval.str = strdup(yytext); return STRING; }
+
 {number}            { yylval.value = atoi(yytext); return NUMBER; }
 {identifier}        { yylval.id = strdup(yytext); return IDENTIFIER; }
 

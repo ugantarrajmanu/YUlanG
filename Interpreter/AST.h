@@ -10,6 +10,8 @@ typedef enum {
         BlockStatement,
         Body,
         PrintStatement,
+        StringLiteral,
+
     } NodeType;
 
     typedef struct ASTNode{
@@ -24,13 +26,17 @@ typedef enum {
             } Literal;
 
             struct {
-                char* kind;
+                char* value;
+            } StringLiteral;
+
+            struct {
+                char* type;
                 struct ASTNode* id;
                 struct ASTNode* init;
             } VariableDeclaration;
 
             struct {
-                char* kind;
+                char* type;
                 struct ASTNode* id;
                 struct ASTNode* value;
             } Assignment;
@@ -66,7 +72,6 @@ typedef enum {
 
             struct {
                 struct ASTNode* value;
-                char* strValue;
             } PrintStatement;
             
         };
@@ -77,10 +82,11 @@ typedef enum {
     ASTNode* makeLiteralNode(int value);
     ASTNode* makeIDNode(char* id);
     ASTNode* makeBinExprNode(ASTNode* left, int op, ASTNode* right);
-    ASTNode* makeVarDeclNode(char* kind, ASTNode* id, ASTNode* init);
-    ASTNode* makeAssignNode(ASTNode* id, ASTNode* value);
+    ASTNode* makeVarDeclNode(char* type, ASTNode* id, ASTNode* init);
+    ASTNode* makeAssignNode(char* type, ASTNode* id, ASTNode* value);
     ASTNode* makeIfNode(ASTNode* test, ASTNode* consequent, ASTNode* alternate);
     ASTNode* makeBlockNode(ASTNode* body);
-    ASTNode* makePrintNode(ASTNode* value, char* strValue);
+    ASTNode* makePrintNode(ASTNode* value);
     ASTNode* makeBodyNode (ASTNode* insideBody, ASTNode* value);
     ASTNode* makeForNode(ASTNode* id, ASTNode* start, ASTNode* end, ASTNode* body);
+    ASTNode* makeStringLiteralNode (char* value);

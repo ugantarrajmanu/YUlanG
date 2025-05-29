@@ -11,6 +11,11 @@ yug agar (c >= 2000) hai to {
     yug "Bye" likhna hai
 }
 
-yug i ko 0 se 10 tak lejana hai {
+yug i ko 5 se 10 tak lejana hai {
     yug i likhna hai
 } 
+
+arey yug d = "hello yug" string hai
+yug d likhna hai
+
+yug "not my self" likhna hai
