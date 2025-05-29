@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   server: {
     proxy: {
-      '/api': "https://yulang-delta.vercel.app",
+      '/api': "https://yulang-back.onrender.com",
     },
   },
   plugins: [react()],
