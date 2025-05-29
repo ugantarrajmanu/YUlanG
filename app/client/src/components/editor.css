@@ -1,0 +1,50 @@
+.second-editor-container {
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+  width: 90vw;
+  padding: 1rem;
+}
+
+.header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.yulang {
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  color: #ffc6ac;
+}
+
+.run-button {
+  background-color: rgb(255, 89, 0);
+  color: white;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-weight: bolder;
+  font-size: 1.3rem;
+  width: 7rem;
+  height: 3.5rem;
+  border-radius: 7px;
+  border-color: transparent;
+  box-shadow: 0px 0px 7px 0px #ffc6ac;
+}
+
+.run-button:hover {
+  cursor: pointer;
+}
+
+.editor-container {
+  height: inherit;
+  width: inherit;
+  border-radius: 1rem;
+  box-shadow: 0px 0px 7px 0px #ffc6ac;
+}
+
+.code-editor {
+  border-radius: 1rem;
+  overflow: auto;
+}
