@@ -18,7 +18,7 @@ yug 50 likhna hai`
   );
 
   const executeCode = async () => {
-    const respost = await fetch("http://localhost:9000/", {
+    const respost = await fetch("/api", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -26,7 +26,7 @@ yug 50 likhna hai`
       body: JSON.stringify({ code: code }),
     });
 
-    const resget = (await fetch("http://localhost:9000/", {method: "GET"}).then((res) => res.text())).split("\r\n");
+    const resget = (await fetch("/api", {method: "GET"}).then((res) => res.text())).split("\r\n");
 
     resget.pop()
 

@@ -25,17 +25,13 @@ app.post("/api", (req, res) => {
   const comm = `echo ${received_code} | ${INTERPRETER_PATH} > output`;
 
   exec(comm, (error, stdout, stderr) => {
-    // if (error) {
-    //   console.error(`error: ${error.name}`);
-    // }
-    // if (stderr) {
-    //   console.error(`stderr: ${stderr}`);
-    // }
-
-    if (!stderr && !error) {
-      console.log(`${stdout}`);
-      // fs.writeFileSync("./output_file/output", stdout);
+    if (error) {
+      console.error(`error: ${error.name}`);
     }
+    if (stderr) {
+      console.error(`stderr: ${stderr}`);
+    }
+    
     res.send("running")
   });
 });
