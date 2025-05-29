@@ -36,7 +36,7 @@ app.post("/api", (req, res) => {
       console.log(`${stdout}`);
       // fs.writeFileSync("./output_file/output", stdout);
     }
-    res.render("index");
+    res.send("running")
   });
 });
 
