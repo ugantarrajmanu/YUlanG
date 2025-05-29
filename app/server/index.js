@@ -5,7 +5,7 @@ const { exec } = require("child_process");
 const cors = require("cors");
 
 const allowedOrigins = [
-  "https://yulang-front.vercel.app/",
+  "https://yulang-front.vercel.app",
   "http://localhost:5173"              
 ];
 
