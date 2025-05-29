@@ -2,9 +2,8 @@ const http = require("http");
 const express = require("express");
 const fs = require("fs");
 const { exec } = require("child_process");
-const { CORS } = require("cors");
+const CORS  = require("cors");
 
-app.use(CORS(), origin = "https://yulang-back.onrender.com");
 
 const INTERPRETER_PATH = "yulang.out";
 
@@ -13,6 +12,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(CORS({
+  origin: "https://yulang-back.onrender.com",
+}));
 
 app.post("/api", (req, res) => {
   const received_code = req.body.code.split("\n").join(" ");
