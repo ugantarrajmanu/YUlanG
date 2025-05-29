@@ -14,17 +14,17 @@ app.use(express.json());
 app.post("/api", (req, res) => {
   const received_code = req.body.code.split("\n").join(" ");
 
-  const comm = `echo '${received_code}' | ${INTERPRETER_PATH} > output`;
+  const comm = `echo '${received_code}' | ${INTERPRETER_PATH}`;
 
   exec(comm, (error, stdout, stderr) => {
-    const output = fs.readFileSync("output");
+    // const output = fs.readFileSync("output");
 
-    res.send(output);
+    res.send(stdout);
 
-    fs.writeFileSync("output", "");
-    fs.unlinkSync("output", (err) => {
-      if (err) throw err;
-    });
+    // fs.writeFileSync("output", "");
+    // fs.unlinkSync("output", (err) => {
+    //   if (err) throw err;
+    // });
 
   });
 });
