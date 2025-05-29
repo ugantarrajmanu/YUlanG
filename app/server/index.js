@@ -2,6 +2,9 @@ const http = require("http");
 const express = require("express");
 const fs = require("fs");
 const { exec } = require("child_process");
+const { CORS } = require("cors");
+
+app.use(CORS(), origin = "https://yulang-back.onrender.com/api");
 
 const INTERPRETER_PATH = "yulang.out";
 
