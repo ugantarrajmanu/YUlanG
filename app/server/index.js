@@ -7,11 +7,19 @@ const CORS = require("cors");
 const INTERPRETER_PATH = "yulang.exe";
 
 const app = express();
-const PORT = 9000;
-app.use(CORS());
+const PORT = process.env.PORT || 3000;
+
 
 app.use(express.json());
-app.post("/", (req, res) => {
+
+// ----------------------------------------------------
+
+// app.get("/hello" , (req, res) => {
+//   res.render("../client/build/index");
+// })
+
+// ----------------------------------------------------
+app.post("/api", (req, res) => {
   const received_code = req.body.code.split("\n").join(" ");
   
   const comm = `echo ${received_code} | ${INTERPRETER_PATH} > output`;
@@ -28,11 +36,11 @@ app.post("/", (req, res) => {
       console.log(`${stdout}`);
       // fs.writeFileSync("./output_file/output", stdout);
     }
-    res.send("Received");
+    res.render("index");
   });
 });
 
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
   const output = fs.readFileSync("./output");
 
   // console.log(output);

@@ -26,7 +26,7 @@ yug 50 likhna hai`
       body: JSON.stringify({ code: code }),
     });
 
-    const resget = (await fetch("http://localhost:9000/").then((res) => res.text())).split("\r\n");
+    const resget = (await fetch("http://localhost:9000/", {method: "GET"}).then((res) => res.text())).split("\r\n");
 
     resget.pop()
 
