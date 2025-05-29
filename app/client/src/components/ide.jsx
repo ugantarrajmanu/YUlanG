@@ -18,7 +18,7 @@ yug 50 likhna hai`
   );
 
   const executeCode = async () => {
-    const res = await fetch("/api", {
+    const res = await fetch("https://yulang-back.onrender.com/api", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
