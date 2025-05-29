@@ -2,13 +2,30 @@ const http = require("http");
 const express = require("express");
 const fs = require("fs");
 const { exec } = require("child_process");
+const cors = require("cors");
 
+const allowedOrigins = [
+  "https://yulang-front.vercel.app/",
+  "http://localhost:5173"              
+];
 
 const INTERPRETER_PATH = "yulang.out";
 
 const app = express();
 
 const PORT = process.env.PORT || 3000;
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods:["GET", "POST"],
+  allowedHeaders: ["Content-Type"],
+}));
 
 app.use(express.json());
 
