@@ -1,7 +1,7 @@
 # YUlanG
 A Toy Programming language
 
-**YUlanG** is a interpreted toy programming language. 
+**YUlanG** is a interpreted Esoteric Programming Language. 
 
 + It uses **` FLEX `** lexer for finding lexeme and token. 
 
