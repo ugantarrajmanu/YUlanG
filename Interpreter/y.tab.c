@@ -2050,7 +2050,22 @@ yyreturn:
 #line 168 "parser1.y"
 
 
-int main() {
+int main(int argc, char **argv) {
+    if (argc < 2) {
+        fprintf(stderr, "Usage: %s <input_file>\n", argv[0]);
+        return 1;        
+    }
+    FILE* file = fopen(argv[1], "r");
+    if (!file) {
+        fprintf(stderr, "Error opening file: %s\n", argv[1]);
+        return 1;
+    }
+    extern FILE *yyin;
+    yyin = file;
+    
+    int parsed = yyparse();
+    fclose(file);
+
     return yyparse();
 }
 
