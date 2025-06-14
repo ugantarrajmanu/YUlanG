@@ -15,28 +15,23 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-app.options("*", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "https://yulang-front.vercel.app");
-  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  res.status(200).end();
-});
-
-
-app.use(cors({
+const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error("Not allowed by CORS"));
+      callback(new Error("CORS not allowed"));
     }
   },
-  methods:["GET", "POST", "OPTIONS"],
+  methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type"],
-}));
+  credentials: true
+};
+
+app.use(cors(corsOptions));
+// app.options("*", cors(corsOptions));
 
 app.use(express.json());
-
 
 app.post("/api", (req, res) => {
   const received_code = req.body.code.split("\n").join(" ");

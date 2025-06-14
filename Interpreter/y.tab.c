@@ -2066,7 +2066,7 @@ int main(int argc, char **argv) {
     int parsed = yyparse();
     fclose(file);
 
-    return yyparse();
+    return parsed;
 }
 
 int yyerror(const char *s) {

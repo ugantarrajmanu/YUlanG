@@ -1,4 +1,5 @@
 %{
+    #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
 
@@ -8,8 +9,6 @@
 number       [0-9]+
 identifier   [a-zA-Z_][a-zA-Z0-9]*
 string       \"([^\\\"]|\\.)*\"
-
-
 
 
 %%
@@ -25,7 +24,7 @@ string       \"([^\\\"]|\\.)*\"
 
 "ko"                { return YUG_KO; }
 "se"                { return YUG_SE; }
-"tak lejana"       { return YUG_TAK; }
+"tak lejana"        { return YUG_TAK; }
 
 "string"            { return YUG_STR; }
 {string}            { yylval.str = strdup(yytext); return STRING; }
@@ -55,7 +54,7 @@ string       \"([^\\\"]|\\.)*\"
 "}"                 { return RBRACE; }
 %%
 
-int yywrap() {
+int yywrap(void) {
     return 1;
 }
 
