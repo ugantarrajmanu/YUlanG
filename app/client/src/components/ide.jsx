@@ -21,7 +21,7 @@ yug 50 likhna hai`
   );
 
   const executeCode = async () => {
-    fetch("http://localhost:3000/api/yulang", {
+    fetch("https://yulang-front.vercel.app/api/yulang", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
