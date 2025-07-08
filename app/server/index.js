@@ -9,8 +9,6 @@ const allowedOrigins = [
   "http://localhost:5173"              
 ];
 
-const INTERPRETER_PATH = "yulang.out";
-
 const app = express();
 
 const PORT = process.env.PORT || 3000;
@@ -33,25 +31,31 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
-app.post("/api", (req, res) => {
-  const received_code = req.body.code.split("\n").join(" ");
+app.post("/api/yulang", (req, res) => {
+  const received_code = req.body.code.split("\n").join(" ").replace(/"/g, '\\"');
 
-  const comm = `echo '${received_code}' | ${INTERPRETER_PATH}`;
+  console.log(received_code);
+
+  const comm = `echo "${received_code}" > output && ./Interpreter/yulang ./output && rm output`;
 
   exec(comm, (error, stdout, stderr) => {
-    // const output = fs.readFileSync("output");
+    if (error) {
+      console.log("stderr: ", stderr);
+      return res.status(500).send(stderr || "Unknown Execution Error");
+    }
 
-    res.send(stdout);
+    if (stderr) {
+      console.log("stderr: ", stderr);
+      return res.status(400).send(stderr || "Unknown Execution Error");
+    } 
 
-    // fs.writeFileSync("output", "");
-    // fs.unlinkSync("output", (err) => {
-    //   if (err) throw err;
-    // });
+    console.log("stdout: ", stdout);
+    return res.status(200).send(stdout);
 
   });
 });
 
-app.get("/api", (req, res) => {
+app.get("/api/yulang", (req, res) => {
   res.send("Server Running.....");
 });
 

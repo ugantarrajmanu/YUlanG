@@ -1,0 +1,31 @@
+FROM ubuntu
+
+WORKDIR /server
+
+RUN apt-get update && \
+    apt-get install -y curl && \
+    apt-get install -y make g++ python3 && \
+    curl -fL https://deb.nodesource.com/setup_22.x | bash - && \
+    apt-get install -y nodejs && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN apt update && apt install -y flex bison gcc
+
+COPY package.json .
+COPY package-lock.json .
+
+RUN npm install
+
+COPY . .
+
+WORKDIR /server/Interpreter
+RUN flex lexer.l
+RUN bison -dy parser.y 
+RUN gcc lex.yy.c y.tab.c -o yulang
+
+WORKDIR /server
+
+EXPOSE 3000
+
+CMD [ "npm", "start" ]

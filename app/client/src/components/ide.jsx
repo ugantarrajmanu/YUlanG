@@ -4,8 +4,10 @@ import { Terminal } from "./term";
 
 
 const OUTPUT_PATH = "../server/output_file/output";
+
 export function Ide() {
   const [outputs, setOutputs] = useState(["\t\tWelcome to the YUlang!"]);
+
   const [code, setCode] = useState(
     `arey yug a = "hello" string hai
 
@@ -19,18 +21,24 @@ yug 50 likhna hai`
   );
 
   const executeCode = async () => {
-    const res = await fetch("https://yulang-back.onrender.com/api", {
+    fetch("http://localhost:3000/api/yulang", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ code: code }),
     })
+    .then(res => res.text())
+    .then(data => ( console.log(data), data.split("\n")))
+    .then(data => (data.pop(), setOutputs(["Executing", ...data])))
+    .catch(err => console.log(err));
 
-    const data = (await res.text()).split("\r\n");
-    data.pop() 
+    // console.log(res.text);
 
-    setOutputs(["Executing", ...data]);
+    // const data = (await res.text()).split("\r\n");
+    // data.pop() 
+
+    // setOutputs(["Executing", ...data]);
   };
 
   return (
