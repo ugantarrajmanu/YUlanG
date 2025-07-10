@@ -34,6 +34,9 @@ NameError: name 'prit' is not defined. Did you mean: 'print'?
 
 This helps in easy debugging but is slower as compared to compiler.
 
+&nbsp;
+
+# **Getting Started**
 ## Run Your First YUlanG Program
 ```
 yug "Hello Butterflies" likhna hai
@@ -42,10 +45,8 @@ Output:
 ``` 
 "Hello Butterflies" 
 ```
+---
 
-&nbsp;
-
-# **Getting Started**
 ## 1. Variable, Numbers and Strings
 ### 1.1 Variable
 - A ```variable``` is a location in memory where we store data.
