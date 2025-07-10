@@ -77,7 +77,6 @@ YUlanG supports strings. String is a sequence of characters;
 arey yug a = "Hello Titli" string hai
 ```
 ---
----
 
 ## 2. Control Flow
 ### 2.1 If, Else
