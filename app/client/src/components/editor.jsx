@@ -1,7 +1,9 @@
 import Editor from "@monaco-editor/react";
 import "./editor.css";
 
-export const YEditor = ({ onClick, code, setCode }) => {
+
+
+export const YEditor = ({ onClick, code, setCode }) => {   
   return (
     <div className="second-editor-container">
       <div className="header">
@@ -10,7 +12,7 @@ export const YEditor = ({ onClick, code, setCode }) => {
           Run
         </button>
       </div>
-      <div className="editor-container">
+      <div className="editor-container" style={{backgroundColor: "#000000"}}>
         <Editor
           className="code-editor"
           theme="hc-black"

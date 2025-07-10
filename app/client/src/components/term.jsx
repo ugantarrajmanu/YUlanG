@@ -1,21 +1,17 @@
-import { Editor } from "@monaco-editor/react";
 import { useRef } from "react";
-
 
 export function Terminal( { outputs } ) {
   const outputRef = useRef();
 
-  console.log(outputs);
-
   return (
-    <div ref={outputRef} className="output" style={{padding: "1rem"}}>
+    <div ref={outputRef} className="output" style={{ maxHeight: "50vh", overflow: "auto", marginInline: "1rem", marginTop:"1rem", marginBottom:"1rem"}}>
       {outputs && outputs.map((output, key) => (
         <div key={key} style={{
-          color: "violet",
+          color: key===0 ? "#FFC72C" : "#C6A1CF",
           fontFamily: "monospace",
           fontSize: "1rem",
           marginBottom: "1rem"
-        }}>{">\t\t" + output}</div>
+        }}>{key===0 ? (">\t\t" + output) : output}</div>
       ))}
     </div>
   );

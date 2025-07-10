@@ -2,9 +2,6 @@ import { useState } from "react";
 import { YEditor } from "./editor";
 import { Terminal } from "./term";
 
-
-const OUTPUT_PATH = "../server/output_file/output";
-
 export function Ide() {
   const [outputs, setOutputs] = useState(["\t\tWelcome to the YUlang!"]);
 
@@ -21,7 +18,7 @@ yug 50 likhna hai`
   );
 
   const executeCode = async () => {
-    fetch("https://yulang-back.onrender.com/api/yulang", {
+    fetch("https://yulang-server.onrender.com/api/yulang", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -29,16 +26,9 @@ yug 50 likhna hai`
       body: JSON.stringify({ code: code }),
     })
     .then(res => res.text())
-    .then(data => ( console.log(data), data.split("\n")))
-    .then(data => (data.pop(), setOutputs(["Executing", ...data])))
+    .then(data => { console.log(data); return data.split("\n")})
+    .then(data => { data.pop(); return setOutputs(["Executing", ...data]); })
     .catch(err => console.log(err));
-
-    // console.log(res.text);
-
-    // const data = (await res.text()).split("\r\n");
-    // data.pop() 
-
-    // setOutputs(["Executing", ...data]);
   };
 
   return (
