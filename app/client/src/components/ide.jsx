@@ -10,11 +10,8 @@ export function Ide() {
 
 
 yug i ko 5 se 10 tak lejana hai {
-    yug i likhna hai
-} 
-
-yug i likhna hai
-yug 50 likhna hai`
+    yug "Hello Butterflies" likhna hai
+}`
   );
 
   const executeCode = async () => {
