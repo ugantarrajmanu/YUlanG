@@ -2,7 +2,7 @@ import { useState } from "react";
 import { YEditor } from "./editor";
 import { Terminal } from "./term";
 
-export function Ide() {
+export function Ide({ vis, setVis }) {
   const [outputs, setOutputs] = useState(["\t\tWelcome to the YUlang!"]);
 
   const [code, setCode] = useState(
@@ -40,8 +40,8 @@ yug b likhna hai`
 
   return (
     <>
-      <div className="main-editor-container">
-        <YEditor onClick={executeCode} code={code} setCode={setCode} />
+      <div className="main-editor-container" >
+        <YEditor onClick={executeCode} code={code} setCode={setCode} setVis={setVis}/>
       </div>
       <div className="main-output-container">
         <Terminal outputs={outputs} />
