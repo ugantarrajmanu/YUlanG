@@ -5,7 +5,7 @@ A Toy Programming language
 
 + It uses **` FLEX `** lexer for finding lexeme and token. 
 
-+ It uses **` BISON `** parser for generating annotated parser tree and then evaluating line by line (interpreter).
++ It uses **` BISON `** parser for generating annotated parse tree and then evaluating line by line (interpreter).
 
 ## What is an Interpreter?
 An interpreter is a program that converts the High Level Language like Python, JavaScript, etc to machine readable language i.e. Low Level Language. 
