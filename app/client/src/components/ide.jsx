@@ -2,7 +2,7 @@ import { useState } from "react";
 import { YEditor } from "./editor";
 import { Terminal } from "./term";
 
-export function Ide({ vis, setVis }) {
+export function Ide({ setVis }) {
   const [outputs, setOutputs] = useState(["\t\tWelcome to the YUlang!"]);
 
   const [code, setCode] = useState(

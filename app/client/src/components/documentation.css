@@ -8,13 +8,24 @@
   0% {
     transform: rotateY(0deg);
   }
-  100% {
+  50% {
     transform: rotateY(180deg);
+  }
+  100% {
+    transform: rotateY(360deg);
   }
 }
 
-@media screen and (max-width: 800px) {
-    
+@media (max-width: 600px) {
+  .manual {
+    font-size: 0.8rem;
+  }
+
+  .manual-content {
+    width: 68vw;
+    padding: 1rem;
+  }
+      
 }
 
 h1,
@@ -24,7 +35,7 @@ h3 {
 }
 
 .manual {
-  top: 3rem;
+  top: 1rem;
   background-color: rgba(0, 0, 0, 90%);
   border: 1px solid white;
   position: fixed;
@@ -41,6 +52,10 @@ h3 {
   padding: 1rem;
   color: #cfbaa1;
   top: 0px;
+}
+
+#yulang:hover {
+  animation: flip 5s 1s infinite linear;
 }
 
 .manual-content {
@@ -76,5 +91,5 @@ pre {
 .close-button:hover {
   cursor: pointer;
   color: rgb(155, 0, 0);
-  animation: flip 0.5s ease-in;
+  animation: flip infinite 2s ease-in;
 }

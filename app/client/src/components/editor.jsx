@@ -2,14 +2,16 @@ import Editor from "@monaco-editor/react";
 import "./editor.css";
 
 export const YEditor = ({ onClick, code, setCode, setVis }) => {
+
+
   return (
     <div className="second-editor-container">
       <div className="header">
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <h1 className="yulang">YUlanG</h1>
+          <h1 role="button" className="yulang">YUlanG</h1>
           <button className='manual-button' onClick={() => setVis(true)}>?</button>
         </div>
-        <button className="run-button" onClick={onClick}>
+        <button className="run-button" title="run" onClick={onClick}>
           Run
         </button>
       </div>
