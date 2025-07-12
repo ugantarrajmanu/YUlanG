@@ -35,7 +35,11 @@
 
 .run-button:hover {
   cursor: pointer;
+  outline: 2px solid #ffc6ac;
+  outline-offset: 3px;
 }
+
+
 
 .editor-container {
   height: inherit;

@@ -1,13 +1,12 @@
 import "./documentation.css";
 
-export function Documentation({ vis, setVis }) {
-
-
+export function Documentation({ setVis }) {
   return (
-    <div className={`manual ${vis.vis ? "show" : ""}`} >
+    <div className="manual">
       {
-        <div  style={{ position: "relative" }}>
-          <div className="manual-header"
+        <div style={{ position: "relative" }}>
+          <div
+            className="manual-header"
             style={{
               display: "flex",
               justifyContent: "space-between",
@@ -15,10 +14,7 @@ export function Documentation({ vis, setVis }) {
             }}
           >
             <h1 id="yulang">YUlanG</h1>
-            <button
-              className="close-button"              
-              onClick={setVis}
-            >
+            <button className="close-button" onClick={setVis}>
               <span style={{ fontSize: "2rem" }}>×</span>
             </button>
           </div>

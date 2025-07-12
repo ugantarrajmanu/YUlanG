@@ -16,17 +16,7 @@
   }
 }
 
-@media (max-width: 600px) {
-  .manual {
-    font-size: 0.8rem;
-  }
 
-  .manual-content {
-    width: 68vw;
-    padding: 1rem;
-  }
-      
-}
 
 h1,
 h2,
@@ -35,7 +25,7 @@ h3 {
 }
 
 .manual {
-  top: 1rem;
+  top: 5vh;
   background-color: rgba(0, 0, 0, 90%);
   border: 1px solid white;
   position: fixed;
@@ -61,7 +51,7 @@ h3 {
 .manual-content {
   height: 65vh;
   width: 80vw;
-  overflow: auto;
+  overflow-y: auto;
   padding: 2rem;
   padding-top: 1rem;
   color: #cfbaa1;
@@ -92,4 +82,16 @@ pre {
   cursor: pointer;
   color: rgb(155, 0, 0);
   animation: flip infinite 2s ease-in;
+}
+
+
+@media (max-width: 600px) {
+  .manual-content {
+    padding: 1rem;
+  }
+
+  .manual {
+    font-size: 0.8rem;
+    padding: 0.2rem;
+  }    
 }

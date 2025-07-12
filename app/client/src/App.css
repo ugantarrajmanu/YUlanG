@@ -7,6 +7,13 @@ body {
   100% { transform: translateY(0rem); }
 }
 
+@media screen and (max-width: 600px) {
+  body {
+    margin: 0px;    
+  }
+  
+}
+
 .container {
     display: flex;
     position: relative;
